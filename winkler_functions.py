@@ -272,14 +272,10 @@ def get_transition_volumes(pump_rates, volume_data):
     return transition_volumes
 
 
-# Write Pumping Program
-# Description:
-# Inputs:
-# Outputs:
-# To-do:
-# Last Update:
-# Example Usage:
-
+'''
+A function to write pumping programs given a Winkler model, ideal pumping rates, and syringe diameter.
+(ARCHIVED)
+'''
 
 def winkler_pumping_program(pump_rates, syringe_diameter, volume_data, step_indices):
     step_indices = np.array(step_indices).astype(int)  # Ensure indices are integers
@@ -444,6 +440,8 @@ def close_connections(meter_serial_object, pump_serial_object):
 Lorentzian Fit to find end-point
 
 Description:
+This function compites the end-point by fitting a lorentzian function to the first derivative of
+the potentiometric titration data.
 
 Inputs: None
 
