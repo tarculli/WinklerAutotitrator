@@ -77,16 +77,16 @@ if data is not None:
         # Display fit results in a textbox
         fit_text = (
             f"Fit Parameters:\n"
-            f"A = {A_fitted:.3f} ± {A_err:.3f}\n"
+            f"A = {A_fitted:.1f} ± {A_err:.1f}\n"
             f"x₀ = {x0_fitted:.3f} ± {x0_err:.3f} mL\n"
             f"γ = {gamma_fitted:.3f} ± {gamma_err:.3f} mL"
         )
         ax[1].text(
-            0.98, 0.95, fit_text,
+            0.25, 0.95, fit_text,
             transform=ax[1].transAxes,
             fontsize=10,
             verticalalignment='top',
-            horizontalalignment='left',
+            horizontalalignment='right',
             bbox=dict(boxstyle='round,pad=0.4', facecolor='white', alpha=0.8)
         )
 
