@@ -82,7 +82,9 @@ input("\n\n\nWhen you are ready, press \"measure\" on the meter, then quickly pr
 
 # Titration and Data Collection
 
-sensitivity = 25
+sensitivity = 25 # this is a unitless number used to tweak the threshold ranges... 
+                 # a higher value means less sensitivity to "derivative" changes.
+
 volume_data = [] 
 mV_data = []
 thresholds = sorted([sensitivity, sensitivity*2.5, sensitivity*3.5, sensitivity*5], reverse=True)
