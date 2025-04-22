@@ -13,37 +13,44 @@ except Exception as e:
     print(f"Error reading CSV: {e}")
     data = None
 
-# Proceed only if data was read successfully
 if data is not None:
-    # Extract data
-    volume_data = data["Volume (mL)"]
-    potential_data = data["Potential (mV)"]
+    # Average potentials for repeated volume values
+    grouped = data.groupby("Volume (mL)").mean(numeric_only=True).reset_index()
+    volume_data = grouped["Volume (mL)"].values
+    potential_data = grouped["Potential (mV)"].values
 
-    # Step 1: Calculate absolute value of the derivative of the potential
-    dy_dx = np.abs((np.nan_to_num(np.gradient(potential_data, volume_data), nan=0)))
+    # Step 1: Calculate negative value of the derivative of the potential
+    dy_dx = -((np.nan_to_num(np.gradient(potential_data, volume_data), nan=0)))
 
     # Step 2: Define the Cauchy (Lorentzian) function
     def cauchy(x, A, x0, gamma):
         return A / (1 + ((x - x0) / gamma) ** 2)
 
+    window = 0.05  # ±0.05 mL around peak
+
+    # Create mask to keep points outside window OR above a threshold
+    x0_guess = volume_data[np.argmax(dy_dx)]
+    #threshold = 0.01 * max(dy_dx)  # Keep values above 1% of peak
+    #mask = ~((np.abs(volume_data - x0_guess) <= window) & (dy_dx < threshold))
+
+    # Apply mask to both x and y
+    #volume_data = volume_data[mask]
+    #dy_dx = dy_dx[mask]
+
     # Step 3: Fit the Cauchy function to the absolute value of the derivative
-    initial_guess = [max(dy_dx), volume_data[np.argmax(dy_dx)], 0.001]
+    initial_guess = [max(dy_dx), x0_guess, 0.01]
 
     try:
-        # Enforce A >= max of derivative, gamma > 0, x0 within volume range
-        lower_bounds = [max(dy_dx), min(volume_data), 1e-6]
-        upper_bounds = [np.inf, max(volume_data), np.inf]
-
+    
         params, covariance = curve_fit(
             cauchy,
             volume_data,
             dy_dx,
-            p0=initial_guess,
-            bounds=(lower_bounds, upper_bounds)
-        )
+            p0=initial_guess)
+        
 
         A_fitted, x0_fitted, gamma_fitted = params
-        perr = np.sqrt(np.diag(covariance))  # Parameter standard deviations
+        perr = 2*np.sqrt(np.diag(covariance))  # Parameter standard deviations
         A_err, x0_err, gamma_err = perr
         fitted_curve = cauchy(np.linspace(0, max(volume_data), 10000), *params)
 
@@ -72,7 +79,7 @@ if data is not None:
 
     if params is not None:
         ax[1].plot(np.linspace(0, max(volume_data), 10000), fitted_curve, label="Lorentzian Fit", color='red', linestyle='--')
-        ax[1].axvline(x0_fitted, color='green', linestyle=':', label=f"Endpoint (x₀) = {x0_fitted:.3f} ± {2*x0_err:.3f} mL")
+        ax[1].axvline(x0_fitted, color='green', linestyle=':', label=f"Endpoint (x₀) = {x0_fitted:.4f} ± {2*x0_err:.4f} mL")
 
     # Print fit parameters to console
     print("\nFit Parameters:")
