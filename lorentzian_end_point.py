@@ -74,21 +74,12 @@ if data is not None:
         ax[1].plot(np.linspace(0, max(volume_data), 10000), fitted_curve, label="Lorentzian Fit", color='red', linestyle='--')
         ax[1].axvline(x0_fitted, color='green', linestyle=':', label=f"Endpoint (x₀) = {x0_fitted:.3f} ± {2*x0_err:.3f} mL")
 
-        # Display fit results in a textbox
-        fit_text = (
-            f"Fit Parameters:\n"
-            f"A = {A_fitted:.1f} ± {A_err:.1f}\n"
-            f"x₀ = {x0_fitted:.3f} ± {x0_err:.3f} mL\n"
-            f"γ = {gamma_fitted:.3f} ± {gamma_err:.3f} mL"
-        )
-        ax[1].text(
-            0.25, 0.95, fit_text,
-            transform=ax[1].transAxes,
-            fontsize=10,
-            verticalalignment='top',
-            horizontalalignment='right',
-            bbox=dict(boxstyle='round,pad=0.4', facecolor='white', alpha=0.8)
-        )
+    # Print fit parameters to console
+    print("\nFit Parameters:")
+    print(f"A      = {A_fitted:.2f} ± {A_err:.2f}")
+    print(f"x₀     = {x0_fitted:.4f} ± {x0_err:.4f} mL")
+    print(f"γ      = {gamma_fitted:.4f} ± {gamma_err:.4f} mL")
+
 
     ax[1].set_xlabel("Titrant Volume (mL)")
     ax[1].set_ylabel(r"Absolute Value of Derivative")
@@ -98,3 +89,13 @@ if data is not None:
 
     plt.tight_layout()
     plt.show()
+
+    # Ask the user if they'd like to save the plot
+    save_plot = input("Would you like to save the plot as a PNG? (y/n): ").strip().lower()
+    if save_plot == 'y':
+        filename = filepath.split("/")[-1].replace(".csv", "_fit.png")
+        try:
+            fig.savefig(filename, dpi=300)
+            print(f"Plot saved as {filename}")
+        except Exception as e:
+            print(f"Failed to save figure: {e}")
