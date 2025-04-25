@@ -124,7 +124,7 @@ try:
                 dx = 0.01
             dy = abs(np.diff(y))
             dydx = dy/dx
-            print(f"Pump Output: {volume} ml \nMeter Output: {mV} mV \nDifference Parameter: {dydx}")
+            print(f"---------------------------\nPump Output: {volume} ml \nMeter Output: {mV} mV \nDifference Parameter: {dydx}\n---------------------------\n")
             volume_data.append(float(volume))
             mV_data.append(mV)
 
@@ -156,6 +156,9 @@ try:
             plt.scatter(float(volume), mV, color='b', s=8)
             plt.draw()
             plt.pause(0.1)
+        
+        else:
+            print(f"No voltage data found from the meter!")
             
         time.sleep(0.5)
 
