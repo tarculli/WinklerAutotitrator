@@ -1,7 +1,7 @@
 # WinklerAutotitrator
 A repository for the functions and scripts needed to run an automatic titration on Masha's Auto-Titrator.
 
-These are the Python scripts necessary to run titrations and process titration data with the titration system built by Toby PO'25 in the Prokopenko Lab.
+These are the Python scripts necessary to run titrations and process titration data with the titration system built by Toby Arculli PO'25 in the Prokopenko Lab.
 
 The "auto_titration.py" script is used for automatic titrations and relies on the serial communication between the pump, meter, and control computer to cycle between pumping rates based on the immediate "derivative" of the titration data. To run this script, navigate to the Winkler folder in the MIMSy laptop, run "python auto_titration.py", and follow the prompts. If you need to set the system up with a new computer, make sure to alter the commands that connect the pump and meter so that they reflect the correct RS232 ports (see "winkler_functions.py").
 
